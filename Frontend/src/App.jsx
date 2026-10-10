@@ -1,20 +1,21 @@
 import { useState, useEffect } from 'react'
 import './App.css'
 
+const API_URL = 'http://44.210.105.208:5000/db'
+
 function App() {
   const [dbTime, setDbTime] = useState('')
   const [name, setName] = useState('')
   const [message, setMessage] = useState('')
   const [loading, setLoading] = useState(false)
 
-  // Fetch database time on component mount
   useEffect(() => {
     fetchDbTime()
   }, [])
 
   const fetchDbTime = async () => {
     try {
-      const response = await fetch('http://localhost:5001/db')
+      const response = await fetch(API_URL)
       const data = await response.json()
       setDbTime(new Date(data.time).toLocaleString())
     } catch (error) {
@@ -28,19 +29,20 @@ function App() {
     if (!name.trim()) return
 
     setLoading(true)
+
     try {
-      const response = await fetch('http://localhost:5001/db', {
+      const response = await fetch(API_URL, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
         },
         body: JSON.stringify({ name: name.trim() }),
       })
-      
+
       const data = await response.json()
       setMessage(data.message || data.error)
       setName('')
-      fetchDbTime() // Refresh time after successful insert
+      fetchDbTime()
     } catch (error) {
       setMessage('Error connecting to server')
     } finally {
@@ -78,14 +80,15 @@ function App() {
               className="input"
               disabled={loading}
             />
-            <button 
-              type="submit" 
+            <button
+              type="submit"
               className="btn-primary"
               disabled={loading || !name.trim()}
             >
               {loading ? '⏳ Adding...' : '✨ Add to Database'}
             </button>
           </form>
+
           {message && (
             <div className={`message ${message.includes('Error') ? 'error' : 'success'}`}>
               {message}

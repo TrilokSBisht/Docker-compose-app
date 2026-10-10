@@ -584,3 +584,52 @@ This project is open source and available under the [MIT License](LICENSE).
 ## 📞 Support
 
 If you encounter any issues or have questions, please open an issue in the GitHub repository.
+## AWS Deployment — ECR and ECS Fargate
+
+### Project Overview
+
+This project is a full-stack web application built using React, Node.js, Express, and PostgreSQL. The application was containerized using Docker and deployed on AWS using Amazon ECR and Amazon ECS with AWS Fargate.
+
+### AWS Services Used
+
+* **Amazon ECR:** Stores the Docker images for the frontend and backend.
+* **Amazon ECS:** Manages and runs the application containers.
+* **AWS Fargate:** Runs containers without requiring us to manage EC2 worker servers.
+* **Amazon VPC:** Provides networking for communication between services.
+* **Amazon CloudWatch Logs:** Collects container logs for troubleshooting.
+
+### Deployment Architecture
+
+1. The React frontend is served through Nginx.
+2. The frontend sends HTTP requests to the Express backend.
+3. The backend communicates with the PostgreSQL database.
+4. Docker images are stored in Amazon ECR.
+5. Amazon ECS runs the frontend, backend, and database as separate services using Fargate.
+
+### ECR Image Tags
+
+* Frontend: `frontend-v2`
+* Backend: `backend-v1`
+
+### ECS Services
+
+* `first-frontend-service`
+* `first-backend-service`
+* `first-database-service`
+
+### Testing and Verification
+
+* Verified that the frontend website was accessible.
+* Verified that the backend database endpoint returned a timestamp.
+* Verified successful data insertion through the frontend.
+* Updated the frontend image, pushed it to ECR, and deployed the new `first-frontend:2` task definition revision.
+
+### Challenges and Solutions
+
+* **Frontend connection failure:** Replaced the incorrect `localhost` API address with the backend's public IP and port.
+* **Database connectivity:** Configured the backend to connect to the database through AWS ECS service discovery.
+* **Image deployment:** Built a new frontend image, pushed it to ECR, and updated the ECS service with a new task definition revision.
+
+### Learning Outcomes
+
+This project provided practical experience with Docker image creation, Amazon ECR, ECS task definitions, Fargate services, service discovery, environment variables, application networking, deployment troubleshooting, and application verification.
