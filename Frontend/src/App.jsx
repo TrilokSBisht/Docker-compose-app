@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react'
 import './App.css'
 
-const API_URL = 'http://44.210.105.208:5000/db'
+const API_URL = 'http://100.53.248.248:5001/db'
 
 function App() {
   const [dbTime, setDbTime] = useState('')
