@@ -6,7 +6,7 @@ A modern full-stack application built with React, Node.js, Express, and PostgreS
 
 ### Prerequisites & Installation
 
-1. **Install Docker Desktop**
+1. ***Install Docker Desktop***
    
    Visit the official Docker documentation and download Docker Desktop for your operating system:
    - 📖 **Official Docker Docs**: https://docs.docker.com/
