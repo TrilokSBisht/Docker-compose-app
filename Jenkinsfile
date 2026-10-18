@@ -1,3 +1,4 @@
+
 pipeline {
     agent any
 
@@ -10,7 +11,7 @@ pipeline {
     stages {
         stage('Checkout') {
             steps {
-                echo 'Source code will be checked out from GitHub.'
+                echo 'Source code checked out from GitHub.'
             }
         }
 
@@ -27,25 +28,42 @@ pipeline {
         }
 
         stage('Test Frontend') {
-    steps {
-        echo 'Frontend production build was validated during Docker image build.'
-    }
-}
+            steps {
+                echo 'Frontend production build validated during Docker image build.'
+            }
+        }
 
         stage('Push Images to ECR') {
             steps {
                 sh '''
-                    aws ecr get-login-password --region $AWS_REGION |
-                    docker login --username AWS --password-stdin $ECR_REGISTRY
+                    aws ecr get-login-password --region "$AWS_REGION" |
+                    docker login --username AWS --password-stdin "$ECR_REGISTRY"
 
                     docker tag frontend:${BUILD_NUMBER} \
-                      $ECR_REGISTRY/$ECR_REPOSITORY:frontend-${BUILD_NUMBER}
+                      "$ECR_REGISTRY/$ECR_REPOSITORY:frontend-${BUILD_NUMBER}"
 
                     docker tag backend:${BUILD_NUMBER} \
-                      $ECR_REGISTRY/$ECR_REPOSITORY:backend-${BUILD_NUMBER}
+                      "$ECR_REGISTRY/$ECR_REPOSITORY:backend-${BUILD_NUMBER}"
 
-                    docker push $ECR_REGISTRY/$ECR_REPOSITORY:frontend-${BUILD_NUMBER}
-                    docker push $ECR_REGISTRY/$ECR_REPOSITORY:backend-${BUILD_NUMBER}
+                    docker push "$ECR_REGISTRY/$ECR_REPOSITORY:frontend-${BUILD_NUMBER}"
+                    docker push "$ECR_REGISTRY/$ECR_REPOSITORY:backend-${BUILD_NUMBER}"
+                '''
+            }
+        }
+
+        stage('Deploy Application') {
+            steps {
+                sh '''
+                    cd /opt/docker-compose-app
+
+                    export COMPOSE_PROJECT_NAME=first-docker-compose
+                    export IMAGE_TAG="${BUILD_NUMBER}"
+
+                    aws ecr get-login-password --region "$AWS_REGION" |
+                      docker login --username AWS --password-stdin "$ECR_REGISTRY"
+
+                    docker compose pull frontend backend
+                    docker compose up -d --no-build
                 '''
             }
         }
@@ -53,7 +71,7 @@ pipeline {
 
     post {
         success {
-            echo 'Build and image push completed successfully.'
+            echo 'Build, push, and deployment completed successfully.'
         }
         failure {
             echo 'Pipeline failed. Check the stage logs.'
