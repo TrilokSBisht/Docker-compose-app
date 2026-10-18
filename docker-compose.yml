@@ -1,6 +1,7 @@
+
 services:
   frontend:
-    build: ./Frontend
+    image: 616150220810.dkr.ecr.us-east-1.amazonaws.com/docker-ecr:frontend-${IMAGE_TAG}
     ports:
       - "3000:80"
     depends_on:
@@ -10,7 +11,7 @@ services:
     restart: unless-stopped
 
   backend:
-    build: ./Backend
+    image: 616150220810.dkr.ecr.us-east-1.amazonaws.com/docker-ecr:backend-${IMAGE_TAG}
     ports:
       - "5001:5000"
     environment:
