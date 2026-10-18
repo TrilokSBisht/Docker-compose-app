@@ -27,13 +27,10 @@ pipeline {
         }
 
         stage('Test Frontend') {
-            steps {
-                dir('Frontend') {
-                    sh 'npm install'
-                    sh 'npm run build'
-                }
-            }
-        }
+    steps {
+        echo 'Frontend production build was validated during Docker image build.'
+    }
+}
 
         stage('Push Images to ECR') {
             steps {
